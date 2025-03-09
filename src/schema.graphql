@@ -1,0 +1,193 @@
+type Query {
+  # User queries
+  users(page: Int, limit: Int, orderBy: String): UserList!
+  user(id: ID!): User
+
+  # Post queries
+  posts(page: Int, limit: Int, orderBy: String): PostList!
+  postsByUser(userId: ID!, page: Int, limit: Int, orderBy: String): PostList!
+  postsByTag(tag: String!, page: Int, limit: Int, orderBy: String): PostList!
+  postById(id: ID!): Post
+
+  # Comment queries
+  comments(page: Int, limit: Int, orderBy: String): CommentList!
+  commentsByPost(postId: ID!, page: Int, limit: Int, orderBy: String): CommentList!
+  commentsByUser(userId: ID!, page: Int, limit: Int, orderBy: String): CommentList!
+
+  # Tag queries
+  tags: [String!]!
+}
+
+type Mutation {
+  # User mutations
+  createUser(input: UserCreateInput!): User!
+  updateUser(id: ID!, input: UserUpdateInput!): User!
+  deleteUser(id: ID!): ID!
+
+  # Post mutations
+  createPost(input: PostCreateInput!): Post!
+  updatePost(id: ID!, input: PostUpdateInput!): Post!
+  deletePost(id: ID!): ID!
+
+  # Comment mutations
+  createComment(input: CommentCreateInput!): Comment!
+  deleteComment(id: ID!): ID!
+}
+
+# Tag types
+type Tag {
+  id: ID!
+  name: String!
+  posts: [Post!]!
+}
+
+# Generic list type
+type ListMetadata {
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
+# User types
+type UserPreview {
+  id: ID!
+  title: String!
+  firstName: String!
+  lastName: String!
+  picture: String!
+}
+
+type User {
+  id: ID!
+  title: String
+  firstName: String!
+  lastName: String!
+  gender: String
+  email: String!
+  dateOfBirth: String
+  registerDate: String!
+  phone: String
+  picture: String
+  location: Location
+  posts: [Post]!
+  comments: [Comment]!
+}
+
+type Location {
+  street: String
+  city: String
+  state: String
+  country: String
+  timezone: String
+  users: [User]!
+}
+
+type UserList {
+  data: [UserPreview!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
+input UserCreateInput {
+  title: String!
+  firstName: String!
+  lastName: String!
+  gender: String
+  email: String!
+  dateOfBirth: String!
+  phone: String!
+  picture: String!
+  location: LocationInput!
+}
+
+input UserUpdateInput {
+  title: String
+  firstName: String
+  lastName: String
+  gender: String
+  dateOfBirth: String
+  phone: String
+  picture: String
+  location: LocationInput
+}
+
+input LocationInput {
+  street: String!
+  city: String!
+  state: String!
+  country: String!
+  timezone: String!
+}
+
+
+# Post types
+type PostPreview {
+  id: ID!
+  text: String!
+  image: String
+  likes: Int!
+  tags: [String!]!
+  publishDate: String!
+  owner: UserPreview!
+}
+
+type Post {
+  id: ID!
+  text: String!
+  image: String
+  likes: Int!
+  link: String
+  tags: [Tag!]!
+  publishDate: String!
+  owner: UserPreview!
+  comments: [Comment]!
+}
+
+type PostList {
+  data: [PostPreview!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
+input PostCreateInput {
+  text: String!
+  image: String!
+  likes: Int
+  tags: [String!]!
+  owner: ID!
+  link: String
+}
+
+input PostUpdateInput {
+  text: String
+  image: String
+  likes: Int
+  tags: [String!]
+  link: String
+}
+
+# Comment types
+type Comment {
+  id: ID!
+  message: String!
+  owner: UserPreview!
+  postId: ID!
+  publishDate: String!
+  post: Post
+}
+
+type CommentList {
+  data: [Comment!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
+
+input CommentCreateInput {
+  message: String!
+  owner: ID!
+  post: ID!
+}

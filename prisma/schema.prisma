@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+
+model User {
+  id           String    @id @default(uuid())
+  title        String   // "mr", "miss", "dr", ""
+  firstName    String    
+  lastName     String    
+  gender       String   // "male", "female"
+  email        String    @unique
+  dateOfBirth  DateTime
+  registerDate DateTime  @default(now())
+  phone        String
+  picture      String   // URL to the picture
+
+  // Relations
+  location   Location? @relation(fields: [locationId], references: [id])
+  locationId String?
+  posts      Post[]
+  comments   Comment[]
+
+  @@map("users")
+}
+
+model Location {
+  id       String @id @default(uuid())
+  street   String 
+  city     String 
+  state    String
+  country  String 
+  timezone String
+
+  // Relations
+  users User[]
+
+  @@map("locations")
+}
+
+model Post {
+  id          String   @id @default(uuid())
+  text        String   
+  image       String?  // URL to the image
+  likes       Int      @default(0)  
+  link        String?
+  publishDate DateTime @default(now())
+
+  // Relations
+  owner     User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId   String
+  tags      Tag[]     @relation("PostToTag")
+  comments  Comment[]
+
+  @@map("posts")
+}
+
+model Comment {
+  id          String   @id @default(uuid())
+  message     String   
+  publishDate DateTime @default(now())
+
+  // Relations
+  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId String
+  post    Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId  String
+
+  @@map("comments")
+}
+
+model Tag {
+  id    String @id @default(uuid())
+  name  String @unique
+
+  // Relations
+  posts Post[] @relation("PostToTag")
+
+  @@map("tags")
+}
