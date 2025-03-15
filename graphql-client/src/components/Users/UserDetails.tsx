@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { gql, useQuery, useMutation } from "@apollo/client";
+import CommentsByUser from "../Comments/CommentsByUser";
 
 const GET_USER_DETAILS = gql`
   query GetUser($id: ID!) {
@@ -103,6 +104,10 @@ export const UserDetails = () => {
     refetch(); // Refresh the data
     setIsEditing(false);
   };
+  const createPost = async (e: any) => {
+    e.preventDefault();
+    navigate("/posts/create", { state: { id: user.id }});
+  };
 
   const handleDelete = async () => {
     if (window.confirm("Are you sure you want to delete this user?")) {
@@ -111,6 +116,11 @@ export const UserDetails = () => {
       });
       navigate("/"); // Redirect to homepage
     }
+  };
+
+  const formatDate = (timestamp: string | number) => {
+    const date = new Date(Number(timestamp)); // Ensure it's a number
+    return isNaN(date.getTime()) ? "Invalid Date" : date.toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" });
   };
 
   return (
@@ -146,9 +156,14 @@ export const UserDetails = () => {
           {/* Additional Info */}
           <div className="mt-6 border-t pt-4">
             <h3 className="text-lg font-semibold text-gray-700 mb-2">Additional Info</h3>
-            <p><strong className="mr-2">Date of Birth:</strong> {user.dateOfBirth}</p>
-            <p><strong className="mr-2">Registered on:</strong> {user.registerDate}</p>
+            <p>
+              <strong className="mr-2">Date of Birth:</strong> {formatDate(user.dateOfBirth)}
+            </p>
+            <p>
+              <strong className="mr-2">Registered on:</strong> {formatDate(user.registerDate)}
+            </p>
           </div>
+
 
           {/* Edit Button */}
           <div className="mt-6 text-center">
@@ -159,12 +174,19 @@ export const UserDetails = () => {
               Edit Profile
             </button>
             <button
+              onClick={createPost}
+              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 ml-2"
+            >
+             Create New Post
+            </button>
+            <button
               onClick={handleDelete}
               className="text-red-500 px-4 py-2 rounded hover:font-semibold cursor-pointer"
             >
               Delete Profile
             </button>
           </div>
+          <CommentsByUser userId={user.id} />
         </>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -269,6 +291,8 @@ export const UserDetails = () => {
           </div>
         </form>
       )}
+      
+      
     </div>
   );
 };

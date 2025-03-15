@@ -122,7 +122,7 @@ export const UsersList = () => {
 
   return (
     <div>
-      <div className="mb-4 p-4 border rounded bg-gray-50 flex flex-wrap gap-4 items-end">
+      <div className="m-4 p-4 border border-gray-200 rounded bg-gray-50 flex flex-wrap gap-4 items-end max-w-3xl">
         <div>
           <label htmlFor="page" className="block text-sm font-medium text-gray-700 mb-1">
             Page
@@ -180,15 +180,21 @@ export const UsersList = () => {
         >
           Apply Filters
         </button>
+        <button
+          onClick={() => navigate(`/user/create`)}
+          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+        >
+          Create new user
+        </button>
       </div>
 
       {loading && data && <div className="mb-2 text-blue-600">Updating results...</div>}
 
-      <Table>
+      <Table className='max-w-5xl m-7'>
         <TableCaption>Showing page {data?.users.page || queryVars.page} of {maxPage} ({totalUsers} total users)</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[150px]">Id</TableHead>
+            <TableHead className="min-w-[100px]">Id</TableHead>
             <TableHead>Title</TableHead>
             <TableHead>Firstname</TableHead>
             <TableHead>Lastname</TableHead>
