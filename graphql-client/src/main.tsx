@@ -8,6 +8,7 @@ import {
   createHttpLink,
   InMemoryCache
 } from '@apollo/client';
+import { Toaster } from "react-hot-toast";
 
 const httpLink = createHttpLink({
   uri: 'http://localhost:4000'
@@ -22,6 +23,7 @@ const client = new ApolloClient({
 createRoot(document.getElementById('root')!).render(
   <StrictMode >
     <ApolloProvider client={client}>
+    <Toaster />
       <App />
     </ApolloProvider>
   </StrictMode>,

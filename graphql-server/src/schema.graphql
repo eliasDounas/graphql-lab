@@ -7,7 +7,7 @@ type Query {
   posts(page: Int, limit: Int, orderBy: String): PostList!
   postsByUser(userId: ID!, page: Int, limit: Int, orderBy: String): PostList!
   postsByTag(tag: String!, page: Int, limit: Int, orderBy: String): PostList!
-  postById(id: ID!): Post
+  postById(id: ID!): PostPreview
 
   # Comment queries
   comments(page: Int, limit: Int, orderBy: String): CommentList!
